@@ -4,6 +4,9 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { OpenAIEmbeddings } from "@langchain/openai";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { QdrantClient } from "@qdrant/js-client-rest";
 
 export const runtime = "edge";
 
@@ -34,10 +37,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PRIVATE_KEY!,
-    );
+    const client = new QdrantClient({
+      url: process.env.QDRANT_URL,
+      apiKey: process.env.QDRANT_API_KEY,
+    });
 
     const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
       chunkSize: 256,
@@ -46,14 +49,14 @@ export async function POST(req: NextRequest) {
 
     const splitDocuments = await splitter.createDocuments([text]);
 
-    const vectorstore = await SupabaseVectorStore.fromDocuments(
+    const vectorStore = await QdrantVectorStore.fromDocuments(
       splitDocuments,
       new OpenAIEmbeddings(),
       {
         client,
-        tableName: "documents",
-        queryName: "match_documents",
-      },
+        url: process.env.QDRANT_URL,
+        collectionName: "a_test_collection",
+      }
     );
 
     return NextResponse.json({ ok: true }, { status: 200 });

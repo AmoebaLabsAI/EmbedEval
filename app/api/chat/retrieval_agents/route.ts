@@ -4,6 +4,9 @@ import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 import { createClient } from "@supabase/supabase-js";
 
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { QdrantClient } from "@qdrant/js-client-rest";
+
 import {
   AIMessage,
   BaseMessage,
@@ -72,17 +75,22 @@ export async function POST(req: NextRequest) {
       temperature: 0.2,
     });
 
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PRIVATE_KEY!,
-    );
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
-      client,
-      tableName: "documents",
-      queryName: "match_documents",
+    const client = new QdrantClient({
+      url: process.env.QDRANT_URL,
+      apiKey: process.env.QDRANT_API_KEY,
     });
 
-    const retriever = vectorstore.asRetriever();
+
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(
+      new OpenAIEmbeddings(),
+      {
+        client,
+        url: process.env.QDRANT_URL,
+        collectionName: "a_test_collection",
+      }
+    );
+
+    const retriever = vectorStore.asRetriever();
 
     /**
      * Wrap the retriever in a tool to present it to the agent in a
