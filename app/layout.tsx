@@ -1,5 +1,9 @@
 import "./globals.css";
 import { Public_Sans } from "next/font/google";
+import localFont from "next/font/local";
+
+// Font files can be colocated inside of `pages`
+const myFont = localFont({ src: "./GalanoGrotesqueBlack.otf" });
 
 import { Navbar } from "@/components/Navbar";
 
@@ -13,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>LangChain + Next.js Template</title>
+        <title>Nick News Production ChatBot</title>
         <link rel="shortcut icon" href="/images/favicon.ico" />
         <meta
           name="description"
@@ -33,7 +37,7 @@ export default function RootLayout({
         />
         <meta name="twitter:image" content="/images/og-image.png" />
       </head>
-      <body className={publicSans.className}>
+      <body className={myFont.className}>
         <div className="flex flex-col p-4 md:p-12 h-[100vh]">
           <Navbar></Navbar>
           {children}
