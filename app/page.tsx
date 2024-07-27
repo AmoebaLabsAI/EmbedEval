@@ -10,8 +10,8 @@ export default function Home() {
         <li className="text-l">
           🤝
           <span className="ml-2">
-            This website features a an integration with OpenAI's ChatGPT AI
-            Assistant.
+            This website features a an integration with OpenAI`&apos;s ChatGPT
+            AI Assistant.
           </span>
         </li>
       </ul>
