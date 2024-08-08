@@ -42,7 +42,7 @@ const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
 
 const AGENT_SYSTEM_TEMPLATE = `You are a helpful production assistant at a major network television studio. 
 
-If you don't know how to answer a question, use the available tools to look up relevant information. `;
+Always use the provided tool to look up an answer to a question, before relying on ChatGPT's large language model.`;
 
 /**
  * This handler initializes and calls an tool caling ReAct agent.
