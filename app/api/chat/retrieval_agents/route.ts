@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.QDRANT_API_KEY,
     });
 
-    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: "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"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINGFACEHUB_API_KEY}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
 
 
 
