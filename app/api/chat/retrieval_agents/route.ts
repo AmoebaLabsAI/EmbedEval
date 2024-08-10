@@ -3,6 +3,10 @@ import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+
+import { EmbeddingModel, FlagEmbedding } from "fastembed";
 import {
   AIMessage,
   BaseMessage,
@@ -76,9 +80,12 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.QDRANT_API_KEY,
     });
 
+    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: "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"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+
+
 
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
-      new OpenAIEmbeddings(),
+      embeddings,
       {
         client,
         url: process.env.QDRANT_URL,

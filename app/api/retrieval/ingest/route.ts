@@ -7,6 +7,10 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { QdrantClient } from "@qdrant/js-client-rest";
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
+
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+
 
 export const runtime = "edge";
 
@@ -49,9 +53,11 @@ export async function POST(req: NextRequest) {
 
     const splitDocuments = await splitter.createDocuments([text]);
 
+    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: "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"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+
     const vectorStore = await QdrantVectorStore.fromDocuments(
       splitDocuments,
-      new OpenAIEmbeddings(),
+      embeddings,
       {
         client,
         url: process.env.QDRANT_URL,
