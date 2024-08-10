@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     const splitDocuments = await splitter.createDocuments([text]);
 
-    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: "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"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
 
     const vectorStore = await QdrantVectorStore.fromDocuments(
       splitDocuments,
