@@ -3,10 +3,9 @@ import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+import { CohereEmbeddings } from "@langchain/cohere";
 
-import { EmbeddingModel, FlagEmbedding } from "fastembed";
 import {
   AIMessage,
   BaseMessage,
@@ -80,10 +79,13 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.QDRANT_API_KEY,
     });
 
-    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINGFACEHUB_API_KEY}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
-
-
-
+    //const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/llm-embedder"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+    const embeddings = new CohereEmbeddings({
+      apiKey: process.env.COHERE_API_KEY, // In Node.js defaults to process.env.COHERE_API_KEY
+      batchSize: 48, // Default value if omitted is 48. Max value is 96
+      model: "embed-english-v3.0"
+    });
+    
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       embeddings,
       {

@@ -20,14 +20,6 @@ export function Navbar() {
       >
         Retrieval Agent HugginFace
       </a>
-      <a
-        className={`mr-4 ${
-          pathname === "/retrieval_agents" ? "text-white border-b" : ""
-        }`}
-        href="/retrieval_agents-openai"
-      >
-        Retrieval Agent OpenAI
-      </a>
     </nav>
   );
 }

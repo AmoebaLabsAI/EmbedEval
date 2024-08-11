@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
+import { QdrantVectorStore } from "@langchain/qdrant";
+import { QdrantClient } from "@qdrant/js-client-rest";
+import { CohereEmbeddings } from "@langchain/cohere";
 
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { ChatOpenAI } from "@langchain/openai";
-import { SerpAPI } from "@langchain/community/tools/serpapi";
-import { Calculator } from "@langchain/community/tools/calculator";
+
 import {
   AIMessage,
   BaseMessage,
@@ -12,6 +12,9 @@ import {
   HumanMessage,
   SystemMessage,
 } from "@langchain/core/messages";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { createRetrieverTool } from "langchain/tools/retriever";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
 export const runtime = "edge";
 
@@ -39,18 +42,20 @@ const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
   }
 };
 
-const AGENT_SYSTEM_TEMPLATE = `You are a talking parrot named Polly. All final responses must be how a talking parrot would respond. Squawk often!`;
+const AGENT_SYSTEM_TEMPLATE = `You are a helpful production assistant at a major network television studio. 
+
+Always use the provided tool to look up an answer to a question, before relying on ChatGPT's large language model.`;
 
 /**
  * This handler initializes and calls an tool caling ReAct agent.
  * See the docs for more information:
  *
  * https://langchain-ai.github.io/langgraphjs/tutorials/quickstart/
+ * https://js.langchain.com/docs/use_cases/question_answering/conversational_retrieval_agents
  */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const returnIntermediateSteps = body.show_intermediate_steps;
     /**
      * We represent intermediate steps as system messages for display purposes,
      * but don't want them in the chat history.
@@ -61,21 +66,51 @@ export async function POST(req: NextRequest) {
           message.role === "user" || message.role === "assistant",
       )
       .map(convertVercelMessageToLangChainMessage);
+    const returnIntermediateSteps = body.show_intermediate_steps;
 
-    // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
-    // You can remove this or use a different tool instead.
-    const tools = [new Calculator(), new SerpAPI()];
-    const chat = new ChatOpenAI({
-      model: "gpt-3.5-turbo-0125",
-      temperature: 0,
+    const chatModel = new ChatOpenAI({
+      model: "gpt-4o",
+      temperature: 0.2,
+    });
+
+    const client = new QdrantClient({
+      url: process.env.QDRANT_URL,
+      apiKey: process.env.QDRANT_API_KEY,
+    });
+
+    const embeddings = new CohereEmbeddings({
+      apiKey: process.env.COHERE_API_KEY, // In Node.js defaults to process.env.COHERE_API_KEY
+      batchSize: 48, // Default value if omitted is 48. Max value is 96
+      model: "embed-english-v3.0"
+    });
+
+
+    const vectorStore = await QdrantVectorStore.fromExistingCollection(
+      embeddings,
+      {
+        client,
+        url: process.env.QDRANT_URL,
+        collectionName: "y_test_collection",
+      }
+    );
+
+    const retriever = vectorStore.asRetriever();
+
+    /**
+     * Wrap the retriever in a tool to present it to the agent in a
+     * usable form.
+     */
+    const tool = createRetrieverTool(retriever, {
+      name: "search_latest_knowledge",
+      description: "Searches and returns up-to-date general information.",
     });
 
     /**
      * Use a prebuilt LangGraph agent.
      */
-    const agent = createReactAgent({
-      llm: chat,
-      tools,
+    const agent = await createReactAgent({
+      llm: chatModel,
+      tools: [tool],
       /**
        * Modify the stock prompt in the prebuilt agent. See docs
        * for how to customize your agent:
@@ -99,7 +134,9 @@ export async function POST(req: NextRequest) {
        * See: https://langchain-ai.github.io/langgraphjs/how-tos/stream-tokens/
        */
       const eventStream = await agent.streamEvents(
-        { messages },
+        {
+          messages,
+        },
         { version: "v2" },
       );
 

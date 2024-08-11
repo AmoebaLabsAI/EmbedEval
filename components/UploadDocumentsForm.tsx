@@ -3,13 +3,30 @@
 import { useState, type FormEvent } from "react";
 import DEFAULT_RETRIEVAL_TEXT from "@/data/DefaultRetrievalText";
 
-export function UploadDocumentsForm() {
+export function UploadDocumentsForm(props: { embeddingModel: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [document, setDocument] = useState(DEFAULT_RETRIEVAL_TEXT);
+
+  let { embeddingModel } = props;
+
+  let url = "";
+
+  if (embeddingModel == "huggingface") {
+    url = "/api/retrieval/ingest";
+  }
+
+  if (embeddingModel == "openai") {
+    url = "/api/retrieval-openai/ingest";
+  }
+
+  if (embeddingModel == "cohere") {
+    url = "/api/retrieval-cohere/ingest";
+  }
+
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await fetch("/api/retrieval/ingest", {
+    const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify({
         text: document,

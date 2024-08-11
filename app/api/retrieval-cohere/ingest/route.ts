@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { CohereEmbeddings } from "@langchain/cohere";
 
+import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
 
 export const runtime = "edge";
 
@@ -46,7 +47,11 @@ export async function POST(req: NextRequest) {
 
     const splitDocuments = await splitter.createDocuments([text]);
 
-    const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/bge-m3"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
+    const embeddings = new CohereEmbeddings({
+      apiKey: process.env.COHERE_API_KEY, // In Node.js defaults to process.env.COHERE_API_KEY
+      batchSize: 48, // Default value if omitted is 48. Max value is 96
+      model: "embed-english-v3.0"
+    });
 
     const vectorStore = await QdrantVectorStore.fromDocuments(
       splitDocuments,
@@ -54,7 +59,7 @@ export async function POST(req: NextRequest) {
       {
         client,
         url: process.env.QDRANT_URL,
-        collectionName: "a_test_collection",
+        collectionName: "y_test_collection",
       }
     );
 
