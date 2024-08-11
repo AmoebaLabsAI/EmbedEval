@@ -24,6 +24,7 @@ export default function AgentsPage() {
 
         <option value="openai">OpenAI</option>
         <option value="cohere">Cohere</option>
+        <option value="mistral">Mistral</option>
       </select>
       <p>embeddingmodel: {embeddingModel}</p>
       <ul>
@@ -50,6 +51,10 @@ export default function AgentsPage() {
 
   if (embeddingModel == "cohere") {
     url = "api/chat/retrieval_agents_cohere";
+  }
+
+  if (embeddingModel == "mistral") {
+    url = "api/chat/retrieval_agents_mistral";
   }
 
   return (

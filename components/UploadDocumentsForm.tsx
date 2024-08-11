@@ -23,6 +23,10 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
     url = "/api/retrieval-cohere/ingest";
   }
 
+  if (embeddingModel == "mistral") {
+    url = "/api/retrieval-mistral/ingest";
+  }
+
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);

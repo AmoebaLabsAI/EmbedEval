@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { CohereEmbeddings } from "@langchain/cohere";
+import { MistralAIEmbeddings } from "@langchain/mistralai";
 
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
@@ -46,10 +47,8 @@ export async function POST(req: NextRequest) {
 
     const splitDocuments = await splitter.createDocuments([text]);
 
-    const embeddings = new CohereEmbeddings({
-      apiKey: process.env.COHERE_API_KEY, // In Node.js defaults to process.env.COHERE_API_KEY
-      batchSize: 48, // Default value if omitted is 48. Max value is 96
-      model: "embed-english-v3.0"
+    const embeddings = new MistralAIEmbeddings({
+      apiKey: process.env.MISTRAL_API_KEY,
     });
 
     const vectorStore = await QdrantVectorStore.fromDocuments(
@@ -58,7 +57,7 @@ export async function POST(req: NextRequest) {
       {
         client,
         url: process.env.QDRANT_URL,
-        collectionName: "y_test_collection",
+        collectionName: "x_test_collection",
       }
     );
 
