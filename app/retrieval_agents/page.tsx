@@ -19,12 +19,15 @@ export default function AgentsPage() {
         name="cars"
         id="cars"
         onChange={(e) => handleChange(e.target.value)}
+        className="bg-black"
       >
         <option value="huggingface">HuggingFaceInference</option>
 
         <option value="openai">OpenAI</option>
         <option value="cohere">Cohere</option>
         <option value="mistral">Mistral</option>
+        <option value="nomic">Nomic</option>
+        <option value="voyage">VoyageAI</option>
       </select>
       <p>embeddingmodel: {embeddingModel}</p>
       <ul>
@@ -55,6 +58,14 @@ export default function AgentsPage() {
 
   if (embeddingModel == "mistral") {
     url = "api/chat/retrieval_agents_mistral";
+  }
+
+  if (embeddingModel == "nomic") {
+    url = "api/chat/retrieval_agents_nomic";
+  }
+
+  if (embeddingModel == "voyage") {
+    url = "api/chat/retrieval_agents_voyage";
   }
 
   return (

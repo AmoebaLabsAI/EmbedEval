@@ -18,7 +18,7 @@ export function Navbar() {
         }`}
         href="/retrieval_agents"
       >
-        Retrieval Agent HugginFace
+        Retrieval Agent
       </a>
     </nav>
   );

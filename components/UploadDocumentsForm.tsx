@@ -27,6 +27,14 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
     url = "/api/retrieval-mistral/ingest";
   }
 
+  if (embeddingModel == "nomic") {
+    url = "/api/retrieval-nomic/ingest";
+  }
+
+  if (embeddingModel == "voyage") {
+    url = "/api/retrieval-voyage/ingest";
+  }
+
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
