@@ -3,7 +3,7 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { CohereEmbeddings } from "@langchain/cohere";
 import { MistralAIEmbeddings } from "@langchain/mistralai";
 import { NomicEmbeddings } from "@langchain/nomic";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { VoyageEmbeddings } from "@langchain/community/embeddings/voyage";
 
@@ -55,26 +55,45 @@ export async function POST(req: NextRequest) {
 
     const vectorStore = await QdrantVectorStore.fromDocuments(
       splitDocuments,
-      (
-        (embeddingModel === "nomic") ? new NomicEmbeddings() : 
-        (embeddingModel === "voyage") ? new VoyageEmbeddings({apiKey: process.env.VOYAGEAI_API_KEY, inputType: "document"}) : 
-        (embeddingModel === "mistral") ? new MistralAIEmbeddings({apiKey: process.env.MISTRAL_API_KEY}) : 
-        (embeddingModel === "huggingface") ? new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/bge-m3"}) : 
-        (embeddingModel === "cohere") ? new CohereEmbeddings({apiKey: process.env.COHERE_API_KEY, batchSize: 48, model: "embed-english-v3.0"}) : 
-        (embeddingModel === "openai" ? new OpenAIEmbeddings() : new OpenAIEmbeddings) 
-      ),
+      embeddingModel === "nomic"
+        ? new NomicEmbeddings()
+        : embeddingModel === "voyage"
+        ? new VoyageEmbeddings({
+            apiKey: process.env.VOYAGEAI_API_KEY,
+            inputType: "document",
+          })
+        : embeddingModel === "mistral"
+        ? new MistralAIEmbeddings({ apiKey: process.env.MISTRAL_API_KEY })
+        : embeddingModel === "huggingface"
+        ? new HuggingFaceInferenceEmbeddings({
+            apiKey: process.env.HUGGINFACEHUB_API_KEY,
+            model: "BAAI/bge-m3",
+          })
+        : embeddingModel === "cohere"
+        ? new CohereEmbeddings({
+            apiKey: process.env.COHERE_API_KEY,
+            batchSize: 48,
+            model: "embed-english-v3.0",
+          })
+        : new OpenAIEmbeddings(),
       {
         client,
         url: process.env.QDRANT_URL,
-        collectionName: (
-          (embeddingModel === "nomic") ? "nomic_collection" : 
-          (embeddingModel === "voyage") ? "voyage_collection" : 
-          (embeddingModel === "mistral") ? "mistral_collection" : 
-          (embeddingModel === "huggingface") ? "huggingface_collection" : 
-          (embeddingModel === "cohere") ? "cohere_collection" :
-          (embeddingModel === "openai") ? "openai_collection" : "default_collection" 
-        ),
-      }
+        collectionName:
+          embeddingModel === "nomic"
+            ? "nomic_collection"
+            : embeddingModel === "voyage"
+            ? "voyage_collection"
+            : embeddingModel === "mistral"
+            ? "mistral_collection"
+            : embeddingModel === "huggingface"
+            ? "huggingface_collection"
+            : embeddingModel === "cohere"
+            ? "cohere_collection"
+            : embeddingModel === "openai"
+            ? "openai_collection"
+            : "default_collection",
+      },
     );
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (e: any) {

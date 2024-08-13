@@ -5,10 +5,9 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 import { CohereEmbeddings } from "@langchain/cohere";
 import { MistralAIEmbeddings } from "@langchain/mistralai";
 import { NomicEmbeddings } from "@langchain/nomic";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { VoyageEmbeddings } from "@langchain/community/embeddings/voyage";
-
 
 import {
   AIMessage,
@@ -18,6 +17,7 @@ import {
   SystemMessage,
 } from "@langchain/core/messages";
 import { ChatOpenAI } from "@langchain/openai";
+import { ChatAnthropic } from "@langchain/anthropic";
 import { createRetrieverTool } from "langchain/tools/retriever";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { searchParams } = new URL(req.url);
     const embeddingModel = searchParams.get("embeddingModel");
+    const model = searchParams.get("chatModel");
     /**
      * We represent intermediate steps as system messages for display purposes,
      * but don't want them in the chat history.
@@ -77,10 +78,18 @@ export async function POST(req: NextRequest) {
       .map(convertVercelMessageToLangChainMessage);
     const returnIntermediateSteps = body.show_intermediate_steps;
 
-    const chatModel = new ChatOpenAI({
-      model: "gpt-4o",
-      temperature: 0.2,
-    });
+    const chatModel =
+      model === "openai"
+        ? new ChatOpenAI({
+            model: "gpt-4o",
+            temperature: 0.2,
+          })
+        : new ChatAnthropic({
+            model: "claude-3-5-sonnet-20240620",
+            temperature: 0,
+            maxTokens: undefined,
+            maxRetries: 2,
+          });
 
     const client = new QdrantClient({
       url: process.env.QDRANT_URL,
@@ -88,25 +97,45 @@ export async function POST(req: NextRequest) {
     });
 
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
-      (
-        (embeddingModel === "nomic") ? new NomicEmbeddings() : 
-        (embeddingModel === "voyage") ? new VoyageEmbeddings({apiKey: process.env.VOYAGEAI_API_KEY, inputType: "document"}) : 
-        (embeddingModel === "mistral") ? new MistralAIEmbeddings({apiKey: process.env.MISTRAL_API_KEY}) : 
-        (embeddingModel === "huggingface") ? new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/bge-m3"}) : 
-        (embeddingModel === "cohere") ? new CohereEmbeddings({apiKey: process.env.COHERE_API_KEY, batchSize: 48, model: "embed-english-v3.0"}) : new OpenAIEmbeddings() 
-      ),
+      embeddingModel === "nomic"
+        ? new NomicEmbeddings()
+        : embeddingModel === "voyage"
+        ? new VoyageEmbeddings({
+            apiKey: process.env.VOYAGEAI_API_KEY,
+            inputType: "document",
+          })
+        : embeddingModel === "mistral"
+        ? new MistralAIEmbeddings({ apiKey: process.env.MISTRAL_API_KEY })
+        : embeddingModel === "huggingface"
+        ? new HuggingFaceInferenceEmbeddings({
+            apiKey: process.env.HUGGINFACEHUB_API_KEY,
+            model: "BAAI/bge-m3",
+          })
+        : embeddingModel === "cohere"
+        ? new CohereEmbeddings({
+            apiKey: process.env.COHERE_API_KEY,
+            batchSize: 48,
+            model: "embed-english-v3.0",
+          })
+        : new OpenAIEmbeddings(),
       {
         client,
         url: process.env.QDRANT_URL,
-        collectionName: (
-          (embeddingModel === "nomic") ? "nomic_collection" : 
-          (embeddingModel === "voyage") ? "voyage_collection" : 
-          (embeddingModel === "mistral") ? "mistral_collection" : 
-          (embeddingModel === "huggingface") ? "huggingface_collection" : 
-          (embeddingModel === "cohere") ? "cohere_collection" : 
-          (embeddingModel === "openai") ? "openai_collection" : "default_collection"
-        ),
-      }
+        collectionName:
+          embeddingModel === "nomic"
+            ? "nomic_collection"
+            : embeddingModel === "voyage"
+            ? "voyage_collection"
+            : embeddingModel === "mistral"
+            ? "mistral_collection"
+            : embeddingModel === "huggingface"
+            ? "huggingface_collection"
+            : embeddingModel === "cohere"
+            ? "cohere_collection"
+            : embeddingModel === "openai"
+            ? "openai_collection"
+            : "default_collection",
+      },
     );
 
     const retriever = vectorStore.asRetriever();
@@ -117,7 +146,8 @@ export async function POST(req: NextRequest) {
      */
     const tool = createRetrieverTool(retriever, {
       name: "vector_database_retrieval",
-      description: "Retrieves documents from a vector database that are relevant to the user query",
+      description:
+        "Retrieves documents from a vector database that are relevant to the user query",
     });
 
     /**
