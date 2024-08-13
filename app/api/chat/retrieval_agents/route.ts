@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { QdrantClient } from "@qdrant/js-client-rest";
-
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
 import { CohereEmbeddings } from "@langchain/cohere";
+import { MistralAIEmbeddings } from "@langchain/mistralai";
+import { NomicEmbeddings } from "@langchain/nomic";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf"; 
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { VoyageEmbeddings } from "@langchain/community/embeddings/voyage";
+
 
 import {
   AIMessage,
@@ -13,7 +17,7 @@ import {
   HumanMessage,
   SystemMessage,
 } from "@langchain/core/messages";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { createRetrieverTool } from "langchain/tools/retriever";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
@@ -45,7 +49,9 @@ const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
 
 const AGENT_SYSTEM_TEMPLATE = `You are a helpful production assistant at a major network television studio. 
 
-Always use the provided tool to look up an answer to a question, before relying on ChatGPT's large language model.`;
+Always use the provided tool to look up an answer to a question, before relying on ChatGPT's large language model.
+
+When replying, make sure to include whether or not you used a tool in the reply, and describe how you used the tool. If you retrieved a document, cite it in the response.`;
 
 /**
  * This handler initializes and calls an tool caling ReAct agent.
@@ -57,6 +63,8 @@ Always use the provided tool to look up an answer to a question, before relying 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const { searchParams } = new URL(req.url);
+    const embeddingModel = searchParams.get("embeddingModel");
     /**
      * We represent intermediate steps as system messages for display purposes,
      * but don't want them in the chat history.
@@ -79,19 +87,25 @@ export async function POST(req: NextRequest) {
       apiKey: process.env.QDRANT_API_KEY,
     });
 
-    //const embeddings = new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/llm-embedder"}) // In Node.js defaults to process.env.HUGGINGFACEHUB_API_KEY });
-    const embeddings = new CohereEmbeddings({
-      apiKey: process.env.COHERE_API_KEY, // In Node.js defaults to process.env.COHERE_API_KEY
-      batchSize: 48, // Default value if omitted is 48. Max value is 96
-      model: "embed-english-v3.0"
-    });
-    
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
-      embeddings,
+      (
+        (embeddingModel === "nomic") ? new NomicEmbeddings() : 
+        (embeddingModel === "voyage") ? new VoyageEmbeddings({apiKey: process.env.VOYAGEAI_API_KEY, inputType: "document"}) : 
+        (embeddingModel === "mistral") ? new MistralAIEmbeddings({apiKey: process.env.MISTRAL_API_KEY}) : 
+        (embeddingModel === "huggingface") ? new HuggingFaceInferenceEmbeddings({ apiKey: process.env.HUGGINFACEHUB_API_KEY, model: "BAAI/bge-m3"}) : 
+        (embeddingModel === "cohere") ? new CohereEmbeddings({apiKey: process.env.COHERE_API_KEY, batchSize: 48, model: "embed-english-v3.0"}) : new OpenAIEmbeddings() 
+      ),
       {
         client,
         url: process.env.QDRANT_URL,
-        collectionName: "a_test_collection",
+        collectionName: (
+          (embeddingModel === "nomic") ? "nomic_collection" : 
+          (embeddingModel === "voyage") ? "voyage_collection" : 
+          (embeddingModel === "mistral") ? "mistral_collection" : 
+          (embeddingModel === "huggingface") ? "huggingface_collection" : 
+          (embeddingModel === "cohere") ? "cohere_collection" : 
+          (embeddingModel === "openai") ? "openai_collection" : "default_collection"
+        ),
       }
     );
 
@@ -102,8 +116,8 @@ export async function POST(req: NextRequest) {
      * usable form.
      */
     const tool = createRetrieverTool(retriever, {
-      name: "search_latest_knowledge",
-      description: "Searches and returns up-to-date general information.",
+      name: "vector_database_retrieval",
+      description: "Retrieves documents from a vector database that are relevant to the user query",
     });
 
     /**

@@ -9,41 +9,18 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
 
   let { embeddingModel } = props;
 
-  let url = "";
-
-  if (embeddingModel == "huggingface") {
-    url = "/api/retrieval/ingest";
-  }
-
-  if (embeddingModel == "openai") {
-    url = "/api/retrieval-openai/ingest";
-  }
-
-  if (embeddingModel == "cohere") {
-    url = "/api/retrieval-cohere/ingest";
-  }
-
-  if (embeddingModel == "mistral") {
-    url = "/api/retrieval-mistral/ingest";
-  }
-
-  if (embeddingModel == "nomic") {
-    url = "/api/retrieval-nomic/ingest";
-  }
-
-  if (embeddingModel == "voyage") {
-    url = "/api/retrieval-voyage/ingest";
-  }
-
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        text: document,
-      }),
-    });
+    const response = await fetch(
+      `/api/retrieval/ingest?embeddingModel=${embeddingModel}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          text: document,
+        }),
+      },
+    );
     if (response.status === 200) {
       setDocument("Uploaded!");
     } else {

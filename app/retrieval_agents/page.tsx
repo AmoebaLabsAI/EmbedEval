@@ -22,7 +22,6 @@ export default function AgentsPage() {
         className="bg-black"
       >
         <option value="huggingface">HuggingFaceInference</option>
-
         <option value="openai">OpenAI</option>
         <option value="cohere">Cohere</option>
         <option value="mistral">Mistral</option>
@@ -42,35 +41,9 @@ export default function AgentsPage() {
     </div>
   );
 
-  let url = "";
-
-  if (embeddingModel == "openai") {
-    url = "/api/chat/retrieval_agents_openai";
-  }
-
-  if (embeddingModel == "huggingface") {
-    url = "api/chat/retrieval_agents";
-  }
-
-  if (embeddingModel == "cohere") {
-    url = "api/chat/retrieval_agents_cohere";
-  }
-
-  if (embeddingModel == "mistral") {
-    url = "api/chat/retrieval_agents_mistral";
-  }
-
-  if (embeddingModel == "nomic") {
-    url = "api/chat/retrieval_agents_nomic";
-  }
-
-  if (embeddingModel == "voyage") {
-    url = "api/chat/retrieval_agents_voyage";
-  }
-
   return (
     <ChatWindow
-      endpoint={url}
+      endpoint={`api/chat/retrieval_agents?embeddingModel=${embeddingModel}`}
       emptyStateComponent={InfoCard}
       showIngestForm={true}
       showIntermediateStepsToggle={true}
