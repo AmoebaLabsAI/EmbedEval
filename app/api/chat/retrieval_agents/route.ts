@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         : embeddingModel === "huggingface"
         ? new HuggingFaceInferenceEmbeddings({
             apiKey: process.env.HUGGINFACEHUB_API_KEY,
-            model: "BAAI/bge-m3",
+            model: "Snowflake/snowflake-arctic-embed-m",
           })
         : embeddingModel === "cohere"
         ? new CohereEmbeddings({
