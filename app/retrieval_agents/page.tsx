@@ -16,7 +16,7 @@ export default function AgentsPage() {
   }
 
   const InfoCard = (
-    <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] overflow-hidden">
+    <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] min-h-[300px] overflow-hidden">
       <h1 className="text-3xl md:text-4xl mb-4">Retrieval Agent</h1>
       <h3>Choose Embedding Model</h3>
       <select
@@ -39,7 +39,25 @@ export default function AgentsPage() {
         <option value="snowflake-arctic-embed-m">
           Snowflake/snowflake-arctic-embed-m
         </option>
+        <option value="snowflake-arctic-embed-l">
+          Snowflake/snowflake-arctic-embed-l
+        </option>
+        <option value="snowflake-arctic-embed-m-long">
+          Snowflake/snowflake-arctic-embed-m-long
+        </option>
+        <option value="snowflake-arctic-embed-xs">
+          Snowflake/snowflake-arctic-embed-xs
+        </option>
+        <option value="snowflake-arctic-embed-s">
+          Snowflake/snowflake-arctic-embed-s
+        </option>
+        <option value="snowflake-arctic-embed-m-v1.5">
+          Snowflake/snowflake-arctic-embed-m-v1.5
+        </option>
         <option value="LaBSE">sentence-transformers/LaBSE</option>
+        <option value="all-MiniLM-L6-v2">
+          sentence-transformers/all-MiniLM-L6-v2
+        </option>
         <option value="mistral">Mistral</option>
         <option value="nomic">Nomic</option>
         <option value="voyage">VoyageAI</option>

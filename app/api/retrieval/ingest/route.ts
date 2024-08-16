@@ -88,10 +88,52 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    if (embeddingModel === "snowflake-arctic-embed-m3") {
+    if (embeddingModel === "all-MiniLM-L6-v2") {
       model = new HuggingFaceInferenceEmbeddings({
         apiKey: process.env.HUGGINFACEHUB_API_KEY,
-        model: "Snowflake/snowflake-arctic-embed-m3",
+        model: "sentence-transformers/all-MiniLM-L6-v2",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-m") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-m",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-l") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-l",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-m-long") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-m-long",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-xs") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-xs",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-s") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-s",
+      });
+    }
+
+    if (embeddingModel === "snowflake-arctic-embed-m-v1.5") {
+      model = new HuggingFaceInferenceEmbeddings({
+        apiKey: process.env.HUGGINFACEHUB_API_KEY,
+        model: "Snowflake/snowflake-arctic-embed-m-v1.5",
       });
     }
 
