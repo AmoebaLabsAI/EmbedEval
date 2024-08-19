@@ -48,9 +48,9 @@ const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
   }
 };
 
-const AGENT_SYSTEM_TEMPLATE = `You are a helpful production assistant at a major network television studio. 
+const AGENT_SYSTEM_TEMPLATE = `You are a helpful job recruiter. You are provided with a resume, and your job is to help turn that resume into a short paragraph describing the work experience. 
 
-Always use the provided tool to look up an answer to a question, before relying on ChatGPT's large language model.
+Always use the provided tool to look up an answer to a question, before relying on a large language model.
 
 When replying, make sure to include whether or not you used a tool in the reply, and describe how you used the tool. If you retrieved a document, cite it in the response.`;
 

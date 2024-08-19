@@ -16,9 +16,9 @@ export default function AgentsPage() {
   }
 
   const InfoCard = (
-    <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] min-h-[300px] overflow-hidden">
-      <h1 className="text-3xl md:text-4xl mb-4">Retrieval Agent</h1>
-      <h3>Choose Embedding Model</h3>
+    <div className="rounded bg-[#25252d] w-full max-h-[85%]">
+      <h1 className="text-3xl md:text-4xl mb-4">EmbedEval</h1>
+      <h2>Step 1: Choose an Embedding Model</h2>
       <select
         name="cars"
         id="cars"
@@ -62,9 +62,9 @@ export default function AgentsPage() {
         <option value="nomic">Nomic</option>
         <option value="voyage">VoyageAI</option>
       </select>
-      <p>embeddingmodel: {embeddingModel}</p>
-
-      <h3>Choose Chat Model</h3>
+      <br />
+      <br />
+      <h2>Step 2: Choose Chat Model</h2>
       <select
         name="cars"
         id="cars"
@@ -74,15 +74,10 @@ export default function AgentsPage() {
         <option value="openai">OpenAI</option>
         <option value="anthropic">Anthropic</option>
       </select>
-      <ul>
-        <li className="hidden text-l md:block">
-          🤝
-          <span className="ml-2">
-            Upload unstructured data into a vector database, then chat with the
-            bot and ask questions!{" "}
-          </span>
-        </li>
-      </ul>
+      <br />
+      <br />
+      <h2>Step 3: Upload Your Data</h2>
+      <h2>Step 4: Chat with your data</h2>
     </div>
   );
 

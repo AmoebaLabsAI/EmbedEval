@@ -38,7 +38,7 @@ export default function RootLayout({
         <meta name="twitter:image" content="/images/og-image.png" />
       </head>
       <body className={myFont.className}>
-        <div className="flex flex-col p-4 md:p-12 h-[100vh]">
+        <div className="flex flex-col p-4 md:p-12 h-[100vh] bg-[#25252d]">
           <Navbar></Navbar>
           {children}
         </div>
