@@ -13,7 +13,7 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
     e.preventDefault();
     setIsLoading(true);
     const response = await fetch(
-      `/api/retrieval/ingest?embeddingModel=${embeddingModel}`,
+      `/api/evaluate/ingest?embeddingModel=${embeddingModel}`,
       {
         method: "POST",
         body: JSON.stringify({

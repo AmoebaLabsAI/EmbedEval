@@ -14,9 +14,9 @@ export function Navbar() {
       </a>
       <a
         className={`mr-4 ${
-          pathname === "/retrieval_agents" ? "text-white border-b" : ""
+          pathname === "/evaluate" ? "text-white border-b" : ""
         }`}
-        href="/retrieval_agents"
+        href="/evaluate"
       >
         Evaluate
       </a>

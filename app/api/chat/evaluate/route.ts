@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Must provide embedding model and chatmodel as URL parameters to to /api/chat/retrieval_agents",
+            "Must provide embedding model and chatmodel as URL parameters to to /api/chat/evaluate",
         },
         { status: 500 },
       );

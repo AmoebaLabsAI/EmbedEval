@@ -16,7 +16,7 @@ export default function AgentsPage() {
   }
 
   const InfoCard = (
-    <div className="rounded bg-[#25252d] w-full max-h-[85%]">
+    <div className="rounded bg-[#25252d] w-full max-h-[85%] margin-auto">
       <h1 className="text-3xl md:text-4xl mb-4">EmbedEval</h1>
       <h2>Step 1: Choose an Embedding Model</h2>
       <select
@@ -39,6 +39,8 @@ export default function AgentsPage() {
         <option value="snowflake-arctic-embed-m">
           Snowflake/snowflake-arctic-embed-m
         </option>
+        {/*
+
         <option value="snowflake-arctic-embed-l">
           Snowflake/snowflake-arctic-embed-l
         </option>
@@ -54,6 +56,7 @@ export default function AgentsPage() {
         <option value="snowflake-arctic-embed-m-v1.5">
           Snowflake/snowflake-arctic-embed-m-v1.5
         </option>
+          */}
         <option value="LaBSE">sentence-transformers/LaBSE</option>
         <option value="all-MiniLM-L6-v2">
           sentence-transformers/all-MiniLM-L6-v2
@@ -64,6 +67,81 @@ export default function AgentsPage() {
       </select>
       <br />
       <br />
+      {embeddingModel === "bge-m3" ? (
+        <ul>
+          <li>
+            Developed by researchers at the{" "}
+            <a href="https://www.baai.ac.cn/english.html">
+              Beijing Academy of Artificial Intelligence
+            </a>
+          </li>
+          <li>Dimensions: 1024</li>
+          <li>
+            <a href="https://huggingface.co/BAAI/bge-m3" target="_blank">
+              Learn More
+            </a>
+          </li>
+          <br />
+        </ul>
+      ) : null}
+      {embeddingModel === "text-embedding-ada-002" ? (
+        <ul>
+          <li>
+            Developed by researchers at{" "}
+            <a href="https://www.openai.com" target="_blank">
+              OpenAI
+            </a>
+          </li>
+          <li>Dimensions: 1024</li>
+          <li>
+            <a
+              href="https://openai.com/index/new-and-improved-embedding-model/"
+              target="_blank"
+            >
+              Learn More
+            </a>
+          </li>
+        </ul>
+      ) : null}
+      {embeddingModel === "text-embedding-3-large" ? (
+        <ul>
+          <li>
+            Developed by researchers at{" "}
+            <a href="https://www.openai.com" target="_blank">
+              OpenAI
+            </a>
+          </li>
+          <li>Dimensions: 3072</li>
+          <li>
+            <a
+              href="https://openai.com/index/new-embedding-models-and-api-updates/"
+              target="_blank"
+            >
+              Learn More
+            </a>
+          </li>
+        </ul>
+      ) : null}
+      {embeddingModel === "text-embedding-3-small" ? (
+        <ul>
+          <li>
+            Developed by researchers at{" "}
+            <a href="https://www.openai.com" target="_blank">
+              OpenAI
+            </a>
+          </li>
+          <li>Dimensions: 1536</li>
+          <li>
+            <a
+              href="https://openai.com/index/new-embedding-models-and-api-updates/"
+              target="_blank"
+            >
+              Learn More
+            </a>
+          </li>
+        </ul>
+      ) : null}
+
       <h2>Step 2: Choose Chat Model</h2>
       <select
         name="cars"
@@ -83,13 +161,12 @@ export default function AgentsPage() {
 
   return (
     <ChatWindow
-      endpoint={`api/chat/retrieval_agents?embeddingModel=${embeddingModel}&chatModel=${chatModel}`}
+      endpoint={`api/chat/evaluate?embeddingModel=${embeddingModel}&chatModel=${chatModel}`}
       emptyStateComponent={InfoCard}
       showIngestForm={true}
       showIntermediateStepsToggle={true}
       placeholder={'Ask, "Who is the compliance manager at MTV?"'}
       emoji="🤖"
-      titleText="Robbie the Retrieval Robot"
       embeddingModel={embeddingModel}
     />
   );

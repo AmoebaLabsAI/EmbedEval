@@ -17,28 +17,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Embedding Model Evaluator</title>
+        <title>EmbedEval</title>
         <link rel="shortcut icon" href="/images/favicon.ico" />
         <meta
           name="description"
-          content="Evaluate the performance of different embedding models. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
+          content="Evaluate the performance of different text embedding models. See source code and deploy your own at https://github.com/AmoebaLabsAI/EmbedEval!"
         />
-        <meta property="og:title" content="LangChain + Next.js Template" />
+        <meta property="og:title" content="EmbedEval" />
         <meta
           property="og:description"
-          content="Evaluate the performance of different embedding models. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
+          content="Evaluate the performance of different text embedding models. See source code and deploy your own at https://github.com/AmoebaLabsAI/EmbedEval!"
         />
         <meta property="og:image" content="/images/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="LangChain + Next.js Template" />
+        <meta name="twitter:title" content="EmbedEval" />
         <meta
           name="twitter:description"
-          content="Evaluate the performance of different embedding models. See source code and deploy your own at https://github.com/langchain-ai/langchain-nextjs-template!"
+          content="Evaluate the performance of different text embedding models. See source code and deploy your own at https://github.com/AmoebaLabsAI/EmbedEval!"
         />
         <meta name="twitter:image" content="/images/og-image.png" />
       </head>
       <body className={myFont.className}>
-        <div className="flex flex-col p-4 md:p-12 h-[100vh] bg-[#25252d]">
+        <div className="flex flex-col p-4 h-[100vh] bg-[#25252d]">
           <Navbar></Navbar>
           {children}
         </div>
