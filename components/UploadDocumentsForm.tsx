@@ -34,7 +34,7 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
   return (
     <form onSubmit={ingest} className="flex flex-col w-full mb-4">
       <textarea
-        className="grow mr-8 p-4 rounded min-h-[300px] max-w-[50%]"
+        className="grow mr-8 p-4 rounded min-h-[300px] max-w-[75%]"
         value={document}
         onChange={(e) => setDocument(e.target.value)}
       ></textarea>

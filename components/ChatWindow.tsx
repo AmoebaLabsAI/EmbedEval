@@ -208,7 +208,7 @@ export function ChatWindow(props: {
         <div className="flex">{intemediateStepsToggle}</div>
         <div className="flex flex-col w-full mt-4">
           <input
-            className="grow mr-8 p-4 rounded max-w-[50%]"
+            className="grow mr-8 p-4 rounded max-w-[75%]"
             value={input}
             placeholder={placeholder ?? "What's it like to be a pirate?"}
             onChange={handleInputChange}
