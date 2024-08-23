@@ -23,7 +23,7 @@ export default function AgentsPage() {
         name="cars"
         id="cars"
         onChange={(e) => handleEmbeddingChange(e.target.value)}
-        className="bg-black"
+        className="bg-black max-w-[250px]"
       >
         <option value="bge-m3">BAAI/bge-m3</option>
         <option value="text-embedding-ada-002">
