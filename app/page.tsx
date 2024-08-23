@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%]">
+    <div className="p-4 md:p-8 rounded bg-[#25252d] m-auto w-full max-h-[85%]">
       <section id="home" className="relative bg-primary">
         <div className="container">
           <div className="-mx-4 flex flex-wrap items-center">

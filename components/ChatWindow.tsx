@@ -206,16 +206,16 @@ export function ChatWindow(props: {
 
       <form onSubmit={sendMessage} className="flex w-full flex-col">
         <div className="flex">{intemediateStepsToggle}</div>
-        <div className="flex w-full mt-4">
+        <div className="flex flex-col w-full mt-4">
           <input
-            className="grow mr-8 p-4 rounded"
+            className="grow mr-8 p-4 rounded max-w-[50%]"
             value={input}
             placeholder={placeholder ?? "What's it like to be a pirate?"}
             onChange={handleInputChange}
           />
           <button
             type="submit"
-            className="shrink-0 px-8 py-4 bg-sky-600 rounded w-28"
+            className="shrink-0 px-8 py-4 bg-sky-600 rounded w-28 mt-[10px]"
           >
             <div
               role="status"

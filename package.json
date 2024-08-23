@@ -39,6 +39,7 @@
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "fastembed": "^1.14.1",
+    "framer-motion": "^11.3.30",
     "fs": "^0.0.1-security",
     "langchain": "^0.2.10",
     "lucide-react": "^0.429.0",

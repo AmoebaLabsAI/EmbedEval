@@ -32,15 +32,15 @@ export function UploadDocumentsForm(props: { embeddingModel: string }) {
     setIsLoading(false);
   };
   return (
-    <form onSubmit={ingest} className="flex w-full mb-4">
+    <form onSubmit={ingest} className="flex flex-col w-full mb-4">
       <textarea
-        className="grow mr-8 p-4 rounded min-h-[300px]"
+        className="grow mr-8 p-4 rounded min-h-[300px] max-w-[50%]"
         value={document}
         onChange={(e) => setDocument(e.target.value)}
       ></textarea>
       <button
         type="submit"
-        className="shrink-0 px-8 py-4 bg-sky-600 rounded w-28"
+        className="shrink-0 px-8 py-4 bg-sky-600 rounded w-28 mt-[10px]"
       >
         <div
           role="status"
