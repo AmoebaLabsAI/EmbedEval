@@ -3,11 +3,9 @@ import { Public_Sans } from "next/font/google";
 import localFont from "next/font/local";
 
 // Font files can be colocated inside of `pages`
-const myFont = localFont({ src: "./GalanoGrotesqueBlack.otf" });
+const myFont = Public_Sans({ subsets: ["latin"] });
 
 import { Navbar } from "@/components/Navbar";
-
-const publicSans = Public_Sans({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,

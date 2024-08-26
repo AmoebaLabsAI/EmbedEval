@@ -142,7 +142,7 @@ export default function AgentsPage() {
         </ul>
       ) : null}
 
-      <h2>Step 2: Choose Chat Model</h2>
+      <h2>Step 2: Choose A Chat Model</h2>
       <select
         name="cars"
         id="cars"
@@ -155,7 +155,16 @@ export default function AgentsPage() {
       <br />
       <br />
       <h2>Step 3: Upload Your Data</h2>
+      <p>
+        Use the text area to upsert some data into a Qdrant vector database
+        using the selected embedding model.{" "}
+      </p>
+      <br />
       <h2>Step 4: Chat with your data</h2>
+      <p>
+        Use the input area to query the chat model. If necessary, it will
+        retrieve documents from the Qdrant vector store.
+      </p>
     </div>
   );
 
